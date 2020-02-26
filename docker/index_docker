@@ -1,0 +1,44 @@
+# Dockerfile for the VTS application - just the text indexing part. See https://gitlab.com/vgg/vgg_text_search
+
+# Start from an fresh Ubuntu Xenial image
+FROM ubuntu:xenial
+
+# Update repositories and install all apt-get dependencies
+RUN apt-get update && apt-get install -y \
+    python-pip \
+    python-dev \
+    python3-pip \
+    python3-dev \
+    openjdk-8-jdk \
+    ant \
+    unzip \
+    wget \
+    nano \
+    && rm -rf /var/lib/apt/lists/*
+
+# Change the default shell to be able to work with the virtualenv below
+SHELL ["/bin/bash", "-c"]
+
+# Create requirements file, install all requirements, download git repo and configure vgg_face_search
+RUN pip install --upgrade pip \
+    && pip install virtualenv zipp \
+    && mkdir /webapps/ \
+    && chmod 777 /webapps/ \
+    && wget https://gitlab.com/vgg/vgg_text_search/-/archive/master/vgg_text_search-master.zip -O /tmp/vgg_text_search.zip \
+    && unzip /tmp/vgg_text_search.zip -d /webapps/ \
+    && mv /webapps/vgg_text_search* /webapps/vgg_text_search \
+    && sed -i 's/source ..\//source /g' /webapps/vgg_text_search/service/start_backend_service.sh \
+    && sed -i 's/source ..\//source /g' /webapps/vgg_text_search/pipeline/start_pipeline.sh \
+    && sed -i 's/localhost/0.0.0.0/g' /webapps/vgg_face_search/service/settings.py \
+    && cd /webapps/vgg_text_search \
+    && virtualenv -p python3 . \
+    && source ./bin/activate \
+    && pip install simplejson==3.8.2 Flask==0.10.1 \
+    && wget https://archive.apache.org/dist/lucene/pylucene/pylucene-8.1.1-src.tar.gz -P /tmp \
+    && cd /tmp && tar -xvzf pylucene-8.1.1-src.tar.gz \
+    && cd /tmp/pylucene-8.1.1/jcc/ && sed -i 's|java-8-oracle|java-8-openjdk-amd64|g' setup.py \
+    && python setup.py build && python setup.py install \
+    && cd /tmp/pylucene-8.1.1 \
+    && sed -i 's|# Linux     (Debian Jessie 64-bit, Python 3.4.2|\nPREFIX_PYTHON=/webapps/vgg_text_search\nANT=JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 /usr/bin/ant\nPYTHON=$(PREFIX_PYTHON)/bin/python3\nJCC=$(PYTHON) -m jcc --shared\nNUM_FILES=10\n#|g' Makefile \
+    && make &&  make install \
+    && rm -rf /tmp/*.zip && rm -rf /tmp/*.tar* && rm -rf /tmp/pylucene-8.1.1/
