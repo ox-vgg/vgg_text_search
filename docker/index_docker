@@ -29,7 +29,7 @@ RUN pip install --upgrade pip \
     && mv /webapps/vgg_text_search* /webapps/vgg_text_search \
     && sed -i 's/source ..\//source /g' /webapps/vgg_text_search/service/start_backend_service.sh \
     && sed -i 's/source ..\//source /g' /webapps/vgg_text_search/pipeline/start_pipeline.sh \
-    && sed -i 's/localhost/0.0.0.0/g' /webapps/vgg_face_search/service/settings.py \
+    && sed -i 's/localhost/0.0.0.0/g' /webapps/vgg_text_search/service/settings.py \
     && cd /webapps/vgg_text_search \
     && virtualenv -p python3 . \
     && source ./bin/activate \
