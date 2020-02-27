@@ -48,9 +48,12 @@ if __name__ == "__main__":
     opt = "r"
     if os.path.isdir(index_dir):
         # ... and "add" or "replace" if needed
-        opt = input("Index already exists, replace (r) or add (a)? [r]: ")
-        if not len(opt) or opt == "r":
-            shutil.rmtree(index_dir)
+        while True:
+            opt = input("Index already exists, replace (r) or add (a)? [r]: ")
+            if opt == "r" or opt == "a":
+                if not len(opt) or opt == "r":
+                    shutil.rmtree(index_dir)
+                break
 
     # Init lucene stuff
     lucene.initVM(vmargs=['-Djava.awt.headless=true'])
@@ -58,6 +61,8 @@ if __name__ == "__main__":
     # create and open an index writer
     config = IndexWriterConfig(LimitTokenCountAnalyzer(StandardAnalyzer(), 512))
     if opt == "r":
+        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE)
+    elif len(os.listdir(index_dir)) == 0 :
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE)
     else:
         config.setOpenMode(IndexWriterConfig.OpenMode.APPEND)
