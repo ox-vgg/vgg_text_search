@@ -32,7 +32,7 @@ else
     DATE=`date '+%d-%m-%Y %H:%M:%S'`
     echo "[$DATE]: ------- Extracting detections"
     cd "${PIPELINE_DIR}"
-    python extract_detections_yang_test_detect_recognize.py /tmp/text_detect_recognize/Recognition.pkl "${2}" -o /tmp/text_detect_recognize/detections.txt
+    python extract_detections_yang_text_detect_recognize.py /tmp/text_detect_recognize/Recognition.pkl "${2}" -o /tmp/text_detect_recognize/detections.txt
 
     DATE=`date '+%d-%m-%Y %H:%M:%S'`
     echo "[$DATE]: ------- Indexing detections"
