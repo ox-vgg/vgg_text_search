@@ -30,6 +30,7 @@ RUN pip install --upgrade pip \
     && sed -i 's/source ..\//source /g' /webapps/vgg_text_search/service/start_backend_service.sh \
     && sed -i 's/source ..\//source /g' /webapps/vgg_text_search/pipeline/start_pipeline.sh \
     && sed -i 's/localhost/0.0.0.0/g' /webapps/vgg_text_search/service/settings.py \
+    && rm -rf /webapps/vgg_text_search/data/images.index/.gitignore \
     && cd /webapps/vgg_text_search \
     && virtualenv -p python3 . \
     && source ./bin/activate \
@@ -42,3 +43,10 @@ RUN pip install --upgrade pip \
     && sed -i 's|# Linux     (Debian Jessie 64-bit, Python 3.4.2|\nPREFIX_PYTHON=/webapps/vgg_text_search\nANT=JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 /usr/bin/ant\nPYTHON=$(PREFIX_PYTHON)/bin/python3\nJCC=$(PYTHON) -m jcc --shared\nNUM_FILES=10\n#|g' Makefile \
     && make &&  make install \
     && rm -rf /tmp/*.zip && rm -rf /tmp/*.tar* && rm -rf /tmp/pylucene-8.1.1/
+
+# The customizations below can be done via the command line and are not needed here.
+# If you need them create a new Docker image derived from this one and define them.
+#EXPOSE 55366
+#VOLUME /webapps/vgg_text_search/data/images.index \
+#       /webapps/vgg_text_search/data/text_detections
+#ENTRYPOINT /webapps/vgg_face_search/service/start_backend_service.sh
