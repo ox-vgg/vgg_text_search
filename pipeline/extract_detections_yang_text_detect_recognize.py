@@ -6,7 +6,7 @@ import os
 import sys
 import argparse
 import platform
-import shutils
+import shutil
 
 # add the web service folder to the sys path
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
