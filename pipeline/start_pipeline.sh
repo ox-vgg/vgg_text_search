@@ -3,7 +3,7 @@
 # $1 -> Type of input: "video" or "images"
 # $2 -> If input type is "video": Full path to video. If input type is "images": Full path to base folder holding the images referenced by the search service
 # $3 -> If input type is "video": Full path to base folder holding the images referenced by the search service. If input type is "images": Full path to text file containing list of images to ingest
-# $4 -> Full path to output features file (optional)
+# $4 -> Full path to output features file (not used)
 
 #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<additional paths>
 BASEDIR=$(dirname "$0")
@@ -72,7 +72,8 @@ if [ "$1" = "video" ]; then
 
         # clean up again
         rm -rf /tmp/text_detect_recognize
-
+        rm -rf "/tmp/${VIDEONAME}"
+        rm -f "/tmp/${VIDEONAME}_shots.txt"
     fi
 else
     DATE=`date '+%d-%m-%Y %H:%M:%S'`
