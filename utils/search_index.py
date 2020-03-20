@@ -51,11 +51,13 @@ if __name__ == "__main__":
         doc_counter = 0
         for hit in hits.scoreDocs:
             doc = searcher.doc(hit.doc)
-            word = doc.getField('text').stringValue()
-            word = word.split(' ')[0]
+            words = doc.getField('text').stringValue()
             img = doc.getField('frame').stringValue()
-            if opt.lower() in word.lower():
+            if opt.lower() in words.lower():
                doc_counter = doc_counter + 1
-               print ("score:", hit.score, "text:", word, "frame:", img)
+               for word in words.split(' '):
+                   if opt.lower() in word.lower():
+                       doc_counter = doc_counter + 1
+                       print ("score:", hit.score, "text:", word, "frame:", img)
 
         print ("Found %d documents for '%s'" % (doc_counter, query))
