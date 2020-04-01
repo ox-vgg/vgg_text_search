@@ -16,6 +16,8 @@ The service is supposed to query a text-index containing words acquired from tex
 
 The service is supposed to search for words in the text-index and then retrieve the results. For this to work, the text-index must be built before hand. The scripts to perform this task are located inside the `utils` folder. See the README file inside `utils` for more information.
 
+***Full-system***: If you do not have a set of text detection results, you can generate one from a set of images or a video file. The full-system includes `ffmpeg` and [Yang Liu's Text-Detect-Recognize](https://github.com/lyyangduo/Text-Detect-Recognize) software, which is be able to detect and recognize text from an image. The scripts in the `pipeline` folder will allow you to process an image folder or a video with that software, and automatically index the results for later retrieval with the text-search service.
+
 Supported platforms
 -------------------
 
@@ -25,6 +27,8 @@ Usage
 -----
 
 The text-index must be built before running the service. See the README file inside `utils` for information on building the index.
+
+For the ***Full-system***, use the scripts in the `pipeline` folder to process an image folder or a video, and build the index automatically.
 
 After the index has been built, check the `service/settings.py` file and change the location of the text-index and the text-detections if needed. Then, just go to the `service` folder and execute:
 
@@ -42,6 +46,8 @@ The VGG Text Search heavily depends on:
  + [PyLucene](http://lucene.apache.org/pylucene/) v8.1.1. Download the source from <https://archive.apache.org/dist/lucene/pylucene/pylucene-8.1.1-src.tar.gz> and compile it.
  + [Flask](http://flask.pocoo.org/) (tested with v0.10.1).
  + simplejson
+
+For the ***Full-system***, see the additional dependencies in [Yang Liu's Text-Detect-Recognize](https://github.com/lyyangduo/Text-Detect-Recognize) github page.
 
 ACKs
 ----
