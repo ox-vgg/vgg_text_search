@@ -55,14 +55,14 @@ if __name__ == '__main__':
 
     # check input frames path
     if not os.path.exists(args.input_frames_dir) or not os.path.isdir(args.input_frames_dir):
-        print 'ERROR: %s does not exist or is not a valid directory. Aborting !' % args.input_frames_dir
+        print ('ERROR: %s does not exist or is not a valid directory. Aborting !' % args.input_frames_dir)
         sys.exit(1)
 
     # acquire list of images
     video_frames_list = os.listdir(args.input_frames_dir)
     video_frames_list.sort()
     if len(video_frames_list)==0:
-        print 'ERROR: There are no frames in %s . Aborting !.' % args.input_frames_dir
+        print ('ERROR: There are no frames in %s . Aborting !.' % args.input_frames_dir)
         sys.exit(1)
 
     # init useful vars
@@ -86,7 +86,7 @@ if __name__ == '__main__':
         # read image
         img = imutils.acquire_image(full_path)
         if numpy.all(img==None):
-            print 'ERROR: Could not read %s. Aborting !' % full_path
+            print ('ERROR: Could not read %s. Aborting !' % full_path)
             sys.exit(1)
 
         if im_width<0 and im_height<0:
@@ -114,8 +114,8 @@ if __name__ == '__main__':
         # if we have found a new shot boundary and it qualifies for saving ...
         if newshot and ( integer_frame_number - last_shot_integer_start_num >= args.min_shot_length) and shot_score >= args.min_shot_score:
 
-            #print "newshot ! significant change between %d and %d" % (integer_frame_number-1, integer_frame_number)
-            #print "shot_score ", shot_score
+            #print ("newshot ! significant change between %d and %d" % (integer_frame_number-1, integer_frame_number))
+            #print ("shot_score ", shot_score)
 
             # check whether we have to convert to seconds
             if args.convert_to_seconds and args.frames_per_second>1:
