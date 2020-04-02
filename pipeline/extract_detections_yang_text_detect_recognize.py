@@ -77,7 +77,8 @@ if __name__ == '__main__':
                 os.makedirs(text_detection_dir)
 
             # create detections file
-            text_detection_file = os.path.join(text_detection_dir, os.path.basename(filepath) + '.txt')
+            detection_filename = os.path.basename(filepath) + '.txt'
+            text_detection_file = os.path.join(text_detection_dir, detection_filename)
             print ("Creating detection file: ", text_detection_file)
             with open(text_detection_file, 'w') as fout:
                 for det in dets[filepath]:
@@ -85,7 +86,10 @@ if __name__ == '__main__':
                     fout.write("%s\t%f\t%f\t%f\t%f\t%f\n" % (det[0], det[1], det[2], det[3], det[4]-det[2], det[5]-det[3] ))
 
             # save to overall list of detections files
-            all_text_detections.write(text_detection_file + '\n')
+            detection_filename = relative_path_dir + os.path.sep + detection_filename
+            if detection_filename.startswith(os.path.sep):
+                detection_filename = detection_filename[1:]
+            all_text_detections.write(detection_filename + '\n')
 
     # the list of detections files is finished
     all_text_detections.close()
