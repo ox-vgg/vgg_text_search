@@ -10,6 +10,13 @@ BASEDIR=$(dirname "$0")
 cd "$BASEDIR"
 PIPELINE_DIR=${PWD}
 source ../../bin/activate
+# get constants from the settings
+cd "${PIPELINE_DIR}/../service/"
+LUCENE_INDEX=$(python -c "import settings; print(settings.LUCENE_INDEX)")
+TEXT_RESULTS_DIR=$(python -c "import settings; print(settings.TEXT_RESULTS_DIR)")
+DEPENDENCIES_PATH=$(python -c "import settings; print(settings.DEPENDENCIES_PATH)")
+# continue with pipeline
+cd "${PIPELINE_DIR}"
 if [ "$1" = "video" ]; then
     # get video name
     VIDEONAME=$(basename "$2")
@@ -49,12 +56,12 @@ if [ "$1" = "video" ]; then
 
         DATE=`date '+%d-%m-%Y %H:%M:%S'`
         echo "[$DATE]: ------- Running detector"
-        cd "${PIPELINE_DIR}/../dependencies/Text-Detect-Recognize/detection/pixel_link/"
+        cd "${DEPENDENCIES_PATH}/Text-Detect-Recognize/detection/pixel_link/"
         ./scripts/test_any.sh 0 ./model/conv3_3/model.ckpt-38055 /tmp/text_detect_recognize/file_list.txt /tmp/text_detect_recognize
 
         DATE=`date '+%d-%m-%Y %H:%M:%S'`
         echo "[$DATE]: ------- Running recognition"
-        cd "${PIPELINE_DIR}/../dependencies/Text-Detect-Recognize/recognition/attention_net/"
+        cd "${DEPENDENCIES_PATH}/Text-Detect-Recognize/recognition/attention_net/"
         python Recognition_yang.py --detection_path /tmp/text_detect_recognize/Detection.pkl --gpus -1 --checkpoint ../attention_net/model/0_480000.pth --output_path /tmp/text_detect_recognize
 
         DATE=`date '+%d-%m-%Y %H:%M:%S'`
@@ -64,9 +71,6 @@ if [ "$1" = "video" ]; then
 
         DATE=`date '+%d-%m-%Y %H:%M:%S'`
         echo "[$DATE]: ------- Indexing detections"
-        cd "${PIPELINE_DIR}/../service/"
-        LUCENE_INDEX=$(python -c "import settings; print(settings.LUCENE_INDEX)")
-        TEXT_RESULTS_DIR=$(python -c "import settings; print(settings.TEXT_RESULTS_DIR)")
         cd "${PIPELINE_DIR}/../utils/"
         echo "a" | python index_results.py /tmp/text_detect_recognize/detections.txt "${TEXT_RESULTS_DIR}" "${LUCENE_INDEX}"
 
@@ -84,12 +88,12 @@ else
 
     DATE=`date '+%d-%m-%Y %H:%M:%S'`
     echo "[$DATE]: ------- Running detector"
-    cd "${PIPELINE_DIR}/../dependencies/Text-Detect-Recognize/detection/pixel_link/"
+    cd "${DEPENDENCIES_PATH}/Text-Detect-Recognize/detection/pixel_link/"
     ./scripts/test_any.sh 0 ./model/conv3_3/model.ckpt-38055 /tmp/text_detect_recognize/file_list.txt /tmp/text_detect_recognize
 
     DATE=`date '+%d-%m-%Y %H:%M:%S'`
     echo "[$DATE]: ------- Running recognition"
-    cd "${PIPELINE_DIR}/../dependencies/Text-Detect-Recognize/recognition/attention_net/"
+    cd "${DEPENDENCIES_PATH}/Text-Detect-Recognize/recognition/attention_net/"
     python Recognition_yang.py --detection_path /tmp/text_detect_recognize/Detection.pkl --gpus -1 --checkpoint ../attention_net/model/0_480000.pth --output_path /tmp/text_detect_recognize
 
     DATE=`date '+%d-%m-%Y %H:%M:%S'`
@@ -99,9 +103,6 @@ else
 
     DATE=`date '+%d-%m-%Y %H:%M:%S'`
     echo "[$DATE]: ------- Indexing detections"
-    cd "${PIPELINE_DIR}/../service/"
-    LUCENE_INDEX=$(python -c "import settings; print(settings.LUCENE_INDEX)")
-    TEXT_RESULTS_DIR=$(python -c "import settings; print(settings.TEXT_RESULTS_DIR)")
     cd "${PIPELINE_DIR}/../utils/"
     echo "a" | python index_results.py /tmp/text_detect_recognize/detections.txt "${TEXT_RESULTS_DIR}" "${LUCENE_INDEX}"
 

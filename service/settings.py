@@ -10,6 +10,8 @@ PORT = 55366
 
 MAX_RESULTS_RETURN = 5000
 
+DEPENDENCIES_PATH = os.path.join(FILE_DIR, '..', 'dependencies')
+
 # Index of the images in the dataset
 LUCENE_INDEX = os.path.join(FILE_DIR, '..', 'data', 'images.index')
 

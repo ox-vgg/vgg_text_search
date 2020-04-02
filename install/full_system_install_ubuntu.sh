@@ -35,7 +35,7 @@ cd /webapps/
 virtualenv -p python3.6 .
 source ./bin/activate
 
-# setup folders and download git repo
+# download git repo and setup
 wget https://gitlab.com/vgg/vgg_text_search/-/archive/master/vgg_text_search-master.zip -O /tmp/vgg_text_search.zip
 unzip /tmp/vgg_text_search.zip -d /webapps/
 mv /webapps/vgg_text_search*  /webapps/vgg_text_search
