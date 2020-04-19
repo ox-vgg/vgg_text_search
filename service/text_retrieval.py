@@ -35,7 +35,6 @@ class TextRetrieval(object):
         ldir = FSDirectory.open(Paths.get(settings.LUCENE_INDEX))
         self.analyzer = StandardAnalyzer()
         self.searcher = IndexSearcher(DirectoryReader.open(ldir))
-        #self.searcher = IndexSearcher(ldir, readOnly=True)
 
 
     def prepare_success_json_str_(self, success):
@@ -226,7 +225,7 @@ class TextRetrieval(object):
                         # See the code of the "index_results" utility script.
                         values = line.split('\t')
                         word = values[0]
-                        if query_string.lower() in word.lower():
+                        if word.lower().startswith(query_string.lower()):
                             score = float(values[1])
                             if score > best_score:
                                 selXMin = int(round(float(values[2])))
