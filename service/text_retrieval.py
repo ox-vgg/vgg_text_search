@@ -147,12 +147,14 @@ class TextRetrieval(object):
             if indexed_text:
                 # When added to the index, text is repeated by their frequency, undo that here.
                 # Plus, take the opportunity to make text lowercase too
-                indexed_text = indexed_text.split(' ')[0].lower()
-                # Now check the query string is actually present in the suggestion, and
-                # the suggestion does not contain problematic characters
-                if query_string in indexed_text and (
-                   re.match("^[#$]?[a-zA-Z0-9_\-\ +,:;.!\?()\[\]]*$", indexed_text)):
-                    results.append(indexed_text.lower())
+                indexed_text = indexed_text.split(' ')
+                for word in indexed_text:
+                    # Now check the query string is actually present in the suggestion, and
+                    # the suggestion does not contain problematic characters
+                    word = word.lower()
+                    if word.startswith(query_string.lower()) and (
+                       re.match("^[#$]?[a-zA-Z0-9_\-\ +,:;.!\?()\[\]]*$", word)):
+                        results.append(word)
         # Remove repeated results and crop the list to a max length of max_results
         non_repeated_results = list(dict.fromkeys(results))[:max_results]
         return non_repeated_results
