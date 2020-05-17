@@ -15,6 +15,7 @@ cd "${PIPELINE_DIR}/../service/"
 LUCENE_INDEX=$(python -c "import settings; print(settings.LUCENE_INDEX)")
 TEXT_RESULTS_DIR=$(python -c "import settings; print(settings.TEXT_RESULTS_DIR)")
 DEPENDENCIES_PATH=$(python -c "import settings; print(settings.DEPENDENCIES_PATH)")
+WORD_FREQUENCY_FILE=$(python -c "import settings; print(settings.WORD_FREQUENCY_FILE)")
 # continue with pipeline
 cd "${PIPELINE_DIR}"
 if [ "$1" = "video" ]; then
@@ -74,6 +75,13 @@ if [ "$1" = "video" ]; then
         cd "${PIPELINE_DIR}/../utils/"
         echo "a" | python index_results.py /tmp/text_detect_recognize/detections.txt "${TEXT_RESULTS_DIR}" "${LUCENE_INDEX}"
 
+        DATE=`date '+%d-%m-%Y %H:%M:%S'`
+        echo "[$DATE]: ------- Computing word fequency"
+        cd "${TEXT_RESULTS_DIR}"
+        find ./ -name "*.txt" -type f -printf '%P\n' > /tmp/text_detect_recognize/all_detections.txt
+        cd "${PIPELINE_DIR}/../utils/"
+        python word_cloud.py /tmp/text_detect_recognize/all_detections.txt "${TEXT_RESULTS_DIR}" "${WORD_FREQUENCY_FILE}"
+
         # clean up again
         rm -rf /tmp/text_detect_recognize
         rm -rf "/tmp/${VIDEONAME}"
@@ -105,6 +113,13 @@ else
     echo "[$DATE]: ------- Indexing detections"
     cd "${PIPELINE_DIR}/../utils/"
     echo "a" | python index_results.py /tmp/text_detect_recognize/detections.txt "${TEXT_RESULTS_DIR}" "${LUCENE_INDEX}"
+
+    DATE=`date '+%d-%m-%Y %H:%M:%S'`
+    echo "[$DATE]: ------- Computing word fequency"
+    cd "${TEXT_RESULTS_DIR}"
+    find ./ -name "*.txt" -type f -printf '%P\n' > /tmp/text_detect_recognize/all_detections.txt
+    cd "${PIPELINE_DIR}/../utils/"
+    python word_cloud.py /tmp/text_detect_recognize/all_detections.txt "${TEXT_RESULTS_DIR}" "${WORD_FREQUENCY_FILE}"
 
     # clean up again
     rm -rf /tmp/text_detect_recognize

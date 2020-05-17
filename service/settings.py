@@ -17,3 +17,6 @@ LUCENE_INDEX = os.path.join(FILE_DIR, '..', 'data', 'images.index')
 
 # Path to directory containing text detections on images
 TEXT_RESULTS_DIR = os.path.join(FILE_DIR, '..', 'data', 'text_detections')
+
+# Path to file containing word frequencies
+WORD_FREQUENCY_FILE = os.path.join(FILE_DIR, '..', 'data', 'word_freq.txt')
