@@ -206,13 +206,19 @@ class TextRetrieval(object):
                     frame_path: Path to the source image.
                     query_string: Text to look for within the words detected in the input image.
             Returns:
-                A list with the coordinates of the ROI in the form of a bounding box
-                [top-rigth-x, top-rigth-y, bottom-left-x, bottom-left-y]. The list
-                is returned in string form, coordinates are separated by '_'.
+                JSON formatted string with 'success' field set to 'False'
+                in case of any problems. The 'success' field set to 'True'
+                otherwise.
+                The ROI is returned in the 'roi' field as a list
+                [x1, y1, x2, y1, x2, y2, x1, y2, x1, y1, word], where (x1,y1)
+                are the coordinates for the upper-right corner of the detection
+                rectangle, and (x2,y2) are the coordinates for the lower-left corner
+                of the detection rectangle; 'word' corresponds to the word inside
+                the rectangle.
         """
         print ('**** getRoi')
 
-        roi_string = ''
+        roi = []
         try:
             query_string = req_params['query_string']
             frame_path = req_params['frame_path']
@@ -234,15 +240,62 @@ class TextRetrieval(object):
                                 selYMax = str( selYMin + int(round(float(values[5]))) )
                                 selXMin = str(selXMin)
                                 selYMin = str(selYMin)
-                                roi_string = selXMin+'_'+selYMin + '_' + selXMin+'_'+ \
-                                             selYMax + '_' + selXMax+'_'+selYMax + '_' + \
-                                             selXMax+'_'+selYMin + '_' + selXMin+'_'+selYMin
+                                roi =  [selXMin, selYMin, selXMin,
+                                     selYMax, selXMax, selYMax,
+                                     selXMax, selYMin, selXMin, selYMin, word ]
                                 best_score = score
         except Exception as e:
             print (e)
             return self.prepare_success_json_str_(False)
 
-        return json.dumps( { 'success':True, 'roi': roi_string} )
+        return json.dumps( { 'success':True, 'roi': roi} )
+
+
+    def getRoiList(self, req_params):
+        """
+            Retrieves all detection ROIs associated to an image.
+            Parameters:
+                req_params: JSON object with at least the fields 'frame_path'
+                corresponding to the path to the source image.
+            Returns:
+                JSON formatted string with 'success' field set to 'False'
+                in case of any problems. The 'success' field set to 'True'
+                otherwise.
+                The ROIs are returned in the 'rois' field as a list of lists.
+                Each list will have the format [x1, y1, x2, y1, x2, y2, x1, y2,
+                x1, y1, word], where (x1,y1) are the coordinates for the
+                upper-right corner of the detection rectangle, and (x2,y2) are
+                the coordinates for the lower-left corner of the detection
+                rectangle; 'word' corresponds to the word inside the rectangle.
+        """
+        print ('**** getRoiList')
+
+        all_rois = []
+        try:
+            frame_path = req_params['frame_path']
+            with open(os.path.join(settings.TEXT_RESULTS_DIR, frame_path + '.txt'), 'r') as csvfile:
+                for line in csvfile:
+                    if len(line)>0:
+                        # With the instruction below, note that the ROI won't be found
+                        # unless the coordinates are separated by "tab" in the text results files.
+                        # See the code of the "index_results" utility script.
+                        values = line.split('\t')
+                        word = values[0]
+                        selXMin = int(round(float(values[2])))
+                        selYMin = int(round(float(values[3])))
+                        selXMax = str( selXMin + int(round(float(values[4]))) )
+                        selYMax = str( selYMin + int(round(float(values[5]))) )
+                        selXMin = str(selXMin)
+                        selYMin = str(selYMin)
+                        roi = [selXMin, selYMin, selXMin,
+                             selYMax, selXMax, selYMax,
+                             selXMax, selYMin, selXMin, selYMin, word ]
+                        all_rois.append(roi)
+        except Exception as e:
+            print (e)
+            return self.prepare_success_json_str_(False)
+
+        return json.dumps( { 'success':True, 'rois': all_rois} )
 
 
     def selfTest(self, req_params):
