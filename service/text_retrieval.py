@@ -240,9 +240,9 @@ class TextRetrieval(object):
                                 selYMax = str( selYMin + int(round(float(values[5]))) )
                                 selXMin = str(selXMin)
                                 selYMin = str(selYMin)
-                                roi =  [selXMin, selYMin, selXMin,
-                                     selYMax, selXMax, selYMax,
-                                     selXMax, selYMin, selXMin, selYMin, word ]
+                                roi =  [selXMin, selYMin, selXMax,
+                                        selYMin, selXMax, selYMax,
+                                        selXMin, selYMax, selXMin, selYMin, word ]
                                 best_score = score
         except Exception as e:
             print (e)
@@ -287,9 +287,9 @@ class TextRetrieval(object):
                         selYMax = str( selYMin + int(round(float(values[5]))) )
                         selXMin = str(selXMin)
                         selYMin = str(selYMin)
-                        roi = [selXMin, selYMin, selXMin,
-                             selYMax, selXMax, selYMax,
-                             selXMax, selYMin, selXMin, selYMin, word ]
+                        roi = [selXMin, selYMin, selXMax,
+                             selYMin, selXMax, selYMax,
+                             selXMin, selYMax, selXMin, selYMin, word ]
                         all_rois.append(roi)
         except Exception as e:
             print (e)
